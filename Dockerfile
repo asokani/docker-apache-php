@@ -11,6 +11,7 @@ RUN apt-get update && \
 
 RUN a2enmod ssl
 RUN a2enmod rewrite
+RUN a2enmod headers
 
 # startup scripts
 RUN mkdir -p /etc/my_init.d
