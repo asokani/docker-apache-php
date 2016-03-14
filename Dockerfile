@@ -22,6 +22,7 @@ ADD acme_tiny.py /opt/acme_tiny.py
 RUN mkdir /etc/service/apache
 ADD apache.sh /etc/service/apache/run
 ADD apache-ssl.conf /etc/apache2/mods-available/ssl.conf
+# letsencrypt
 RUN mkdir -p /app-cert/.well-known/acme-challenge
 ADD letsencrypt-startup.sh /etc/my_init.d/letsencrypt.sh
 
