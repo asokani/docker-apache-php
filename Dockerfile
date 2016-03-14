@@ -12,6 +12,9 @@ RUN apt-get update && \
 RUN a2enmod ssl
 RUN a2enmod rewrite
 
+# startup scripts
+RUN mkdir -p /etc/my_init.d
+
 # letsencrypt
 ADD acme_tiny.py /opt/acme_tiny.py
 
@@ -20,15 +23,10 @@ RUN mkdir /etc/service/apache
 ADD apache.sh /etc/service/apache/run
 ADD apache-ssl.conf /etc/apache2/mods-available/ssl.conf
 RUN mkdir -p /app-cert/.well-known/acme-challenge
-# ADD letsencrypt-startup.sh /tmp/letsencrypt.sh
+ADD letsencrypt-startup.sh /etc/my_init.d/letsencrypt.sh
 
 RUN rm /etc/apache2/sites-available/*
 RUN rm /etc/apache2/sites-enabled/*
-
-# app root
-RUN mkdir /app
-# startup scripts
-RUN mkdir -p /etc/my_init.d
 
 # mail
 RUN sed -i 's/relayhost =/relayhost = postfix/g' /etc/postfix/main.cf
@@ -49,7 +47,7 @@ ADD proftpd-tls.conf /etc/proftpd/tls.conf
 ADD proftpd-sql.sql /etc/proftpd/sql.sql
 ADD proftpd-startup.sh /etc/my_init.d/proftpd.sh
 
-EXPOSE 80 21 43330 43331
+EXPOSE 80 21 443 43330 43331
 
 CMD ["/sbin/my_init"]
 
