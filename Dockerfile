@@ -14,8 +14,9 @@ RUN a2enmod rewrite
 RUN a2enmod headers
 
 # users www-data 33, acme 1000, www-manage 1001
-RUN sudo adduser --disabled-password --gecos "" acme && \   
-    sudo adduser --disabled-password --gecos "" www-manage
+RUN adduser --disabled-password --gecos "" acme && \   
+    adduser --disabled-password --gecos "" www-manage && \
+    usermod -a -G www-data www-manage
 
 # startup scripts
 RUN mkdir -p /etc/my_init.d

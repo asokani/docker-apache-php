@@ -12,4 +12,4 @@ then
     mv $SIGNED_CRT /etc/secrets/letsencrypt/signed.crt
 fi
 rm $INTERMEDIATE $SIGNED_CRT
-/usr/bin/sv reload apache
+/usr/sbin/apache2ctl graceful
