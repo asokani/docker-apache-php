@@ -13,22 +13,32 @@ RUN a2enmod ssl
 RUN a2enmod rewrite
 RUN a2enmod headers
 
+# users www-data 33, acme 1000, www-manage 1001
+RUN sudo adduser --disabled-password --gecos "" acme && \   
+    sudo adduser --disabled-password --gecos "" www-manage
+
 # startup scripts
 RUN mkdir -p /etc/my_init.d
 
 # letsencrypt
 ADD acme_tiny.py /opt/acme_tiny.py
+RUN mkdir -p /var/log/acme && chown :acme /var/log/acme	
+RUN mkdir -p /var/app-cert/.well-known/acme-challenge && \ 
+	chown acme:www-data /var/app-cert/.well-known/acme-challenge && \
+	chmod 750 /var/app-cert/.well-known/acme-challenge
+ADD letsencrypt-startup.sh /etc/my_init.d/letsencrypt.sh
+ADD letsencrypt-cron.sh /etc/cron.monthly/letsencrypt.sh
 
-# apache2 service
+# apache2
 RUN mkdir /etc/service/apache
 ADD apache.sh /etc/service/apache/run
 ADD apache-ssl.conf /etc/apache2/mods-available/ssl.conf
-# letsencrypt
-RUN mkdir -p /app-cert/.well-known/acme-challenge
-ADD letsencrypt-startup.sh /etc/my_init.d/letsencrypt.sh
 
 RUN rm /etc/apache2/sites-available/*
 RUN rm /etc/apache2/sites-enabled/*
+
+# ssh
+RUN rm -f /etc/service/sshd/down
 
 # mail
 RUN sed -i 's/relayhost =/relayhost = postfix/g' /etc/postfix/main.cf
@@ -37,19 +47,7 @@ RUN echo "smtp_host_lookup = native\n" >> /etc/postfix/main.cf
 RUN mkdir /etc/service/postfix
 ADD postfix.sh /etc/service/postfix/run
 
-# proftpd
-RUN mkdir -p /etc/proftpd/ssl
-# RUN openssl req -new -x509 -days 3650 -subj "/C=CZ/L=Prague/O=App/CN=App" -nodes -out /etc/proftpd/ssl/proftpd.cert.pem -keyout /etc/proftpd/ssl/proftpd.key.pem
-# RUN chmod 600 /etc/proftpd/ssl/proftpd.*
-RUN mkdir /etc/service/proftpd
-ADD proftpd.sh /etc/service/proftpd/run
-ADD proftpd.conf /etc/proftpd/proftpd.conf
-ADD proftpd-modules.conf /etc/proftpd/modules.conf
-ADD proftpd-tls.conf /etc/proftpd/tls.conf
-ADD proftpd-sql.sql /etc/proftpd/sql.sql
-ADD proftpd-startup.sh /etc/my_init.d/proftpd.sh
-
-EXPOSE 80 21 443 43330 43331
+EXPOSE 80 22 443
 
 CMD ["/sbin/my_init"]
 
