@@ -7,7 +7,7 @@ RUN apt-get update && \
         joe libapache2-mod-jk mc \
 	proftpd-basic proftpd-mod-sqlite sqlite3 openssl \ 
         pwgen php5-tidy php5-cli php5-gd php5-imagick \
-        php5-memcache php5-tidy wget postfix mailutils
+        php5-memcache php5-tidy wget postfix mailutils busybox
 
 RUN a2enmod ssl
 RUN a2enmod rewrite
