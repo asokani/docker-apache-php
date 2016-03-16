@@ -1,8 +1,8 @@
 #!/bin/bash
 if [ ! -f /etc/secrets/letsencrypt/signed.crt ]; then
-	cd /var/app-cert/
-	python -c 'import BaseHTTPServer as bhs, SimpleHTTPServer as shs; bhs.HTTPServer(("0.0.0.0", 80), shs.SimpleHTTPRequestHandler).serve_forever()' > /dev/null 2>&1 &
+	busybox httpd -f -p 80 -u www-user:www-user -h /var/app-cert
+	HTTP_PID=$!
 	/etc/cron.monthly/letsencrypt.sh
-	pkill -f SimpleHTTPServer
+	kill $HTTP_PID
 fi
 
