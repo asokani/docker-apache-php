@@ -13,10 +13,11 @@ RUN a2enmod ssl
 RUN a2enmod rewrite
 RUN a2enmod headers
 
-# users www-data 33, acme 1000, www-manage 1001
+# users acme 1000, www-manage 1001, www-user 1002
 RUN adduser --disabled-password --gecos "" acme && \   
     adduser --disabled-password --gecos "" www-manage && \
-    usermod -a -G www-data www-manage
+    adduser --disabled-password --gecos "" www-user && \	
+    usermod -a -G www-user www-manage
 
 # startup scripts
 RUN mkdir -p /etc/my_init.d
@@ -25,12 +26,14 @@ RUN mkdir -p /etc/my_init.d
 ADD acme_tiny.py /opt/acme_tiny.py
 RUN mkdir -p /var/log/acme && chown :acme /var/log/acme	
 RUN mkdir -p /var/app-cert/.well-known/acme-challenge && \ 
-	chown acme:www-data /var/app-cert/.well-known/acme-challenge && \
+	chown acme:www-user /var/app-cert/.well-known/acme-challenge && \
 	chmod 750 /var/app-cert/.well-known/acme-challenge
 ADD letsencrypt-startup.sh /etc/my_init.d/letsencrypt.sh
 ADD letsencrypt-cron.sh /etc/cron.monthly/letsencrypt.sh
 
 # apache2
+RUN sed -i 's/APACHE_RUN_USER=www-data/APACHE_RUN_USER=www-user/g' /etc/apache2/envvars && \
+    sed -i 's/APACHE_RUN_GROUP=www-data/APACHE_RUN_GROUP=www-user/g' /etc/apache2/envvars
 RUN mkdir /etc/service/apache
 ADD apache.sh /etc/service/apache/run
 ADD apache-ssl.conf /etc/apache2/mods-available/ssl.conf
