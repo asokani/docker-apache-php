@@ -1,23 +1,14 @@
-FROM phusion/baseimage:0.9.18
+FROM mainlxc/base
 MAINTAINER Webmaster <webmaster@netfinity.cz>
 
 RUN apt-get update && \
-  apt-get -y install git apache2 libapache2-mod-php5 \
-        php5-mysql php5-mcrypt php5-curl \
-        joe libapache2-mod-jk mc \
-	proftpd-basic proftpd-mod-sqlite sqlite3 openssl \ 
-        pwgen php5-tidy php5-cli php5-gd php5-imagick \
-        php5-memcache php5-tidy wget postfix mailutils busybox
+  apt-get -y install apache2 libapache2-mod-php5 \
+        php5-mcrypt php5-curl libapache2-mod-jk \
+	sqlite3 pwgen php5-memcache postfix mailutils
 
 RUN a2enmod ssl
 RUN a2enmod rewrite
 RUN a2enmod headers
-
-# users acme 1000, www-manage 1001, www-user 1002
-RUN adduser --disabled-password --gecos "" acme && \   
-    adduser --disabled-password --gecos "" www-manage && \
-    adduser --disabled-password --gecos "" www-user && \	
-    usermod -a -G www-user www-manage
 
 # startup scripts
 RUN mkdir -p /etc/my_init.d
@@ -55,4 +46,4 @@ EXPOSE 80 22 443
 
 CMD ["/sbin/my_init"]
 
-#RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
