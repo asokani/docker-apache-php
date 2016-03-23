@@ -25,3 +25,4 @@ EXPOSE 80 22 443
 CMD ["/sbin/my_init"]
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ 
