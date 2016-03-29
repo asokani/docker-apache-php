@@ -17,6 +17,10 @@ RUN mkdir /etc/service/apache
 ADD apache.sh /etc/service/apache/run
 ADD apache-ssl.conf /etc/apache2/mods-available/ssl.conf
 
+# letsencrypt - reload after renewal
+RUN echo "/usr/sbin/apache2ctl graceful" >> /etc/cron.monthly/letsencrypt.sh
+
+
 RUN rm /etc/apache2/sites-available/*
 RUN rm /etc/apache2/sites-enabled/*
 
