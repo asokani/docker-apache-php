@@ -16,6 +16,7 @@ RUN sed -i 's/APACHE_RUN_USER=www-data/APACHE_RUN_USER=www-user/g' /etc/apache2/
 RUN mkdir /etc/service/apache
 ADD apache.sh /etc/service/apache/run
 ADD apache-ssl.conf /etc/apache2/mods-available/ssl.conf
+ADD apache-mpm-prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 
 # letsencrypt - reload  after renewal
 RUN echo "/usr/sbin/apache2ctl graceful" >> /etc/cron.monthly/letsencrypt.sh
