@@ -19,7 +19,7 @@ ADD apache-ssl.conf /etc/apache2/mods-available/ssl.conf
 ADD apache-mpm-prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 
 # letsencrypt - reload  after renewal
-RUN echo "/usr/sbin/apache2ctl graceful" >> /etc/cron.monthly/letsencrypt.sh
+RUN echo "/usr/sbin/apache2ctl graceful" >> /etc/cron.weekly/letsencrypt.sh
 
 
 RUN rm /etc/apache2/sites-available/*
