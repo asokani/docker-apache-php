@@ -21,6 +21,8 @@ ADD apache-mpm-prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 # letsencrypt - reload  after renewal
 RUN echo "/usr/sbin/apache2ctl graceful" >> /etc/cron.weekly/letsencrypt
 
+# php 5
+RUN sed -i -e 's/upload_max_filesize\s\+=\s\+2M/upload_max_filesize = 50M/' /etc/php5/apache2/php.ini
 
 RUN rm /etc/apache2/sites-available/*
 RUN rm /etc/apache2/sites-enabled/*
