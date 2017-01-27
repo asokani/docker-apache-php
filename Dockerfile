@@ -22,7 +22,7 @@ ADD apache-mpm-prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 RUN echo "/usr/sbin/apache2ctl graceful" >> /etc/cron.weekly/letsencrypt
 
 # php 5
-RUN sed -i -e 's/upload_max_filesize\s\+=\s\+2M/upload_max_filesize = 50M/' /etc/php5/apache2/php.ini &&
+RUN sed -i -e 's/upload_max_filesize\s\+=\s\+2M/upload_max_filesize = 50M/' /etc/php5/apache2/php.ini && \
 	sed -i -e 's/post_max_size\s\+=\s\+8M/post_max_size = 50M/' /etc/php5/apache2/php.ini
 
 RUN rm /etc/apache2/sites-available/*
