@@ -4,12 +4,12 @@ const path = require("path");
 const fs = require("fs");
 const childProcess = require("child_process");
 
-const secretsDir = "/etc/secrets/apache-php";
 const letsencryptDir = "/etc/secrets/letsencrypt";
+const configDir = "/etc/secrets/_config/apache-php";
 
 const apacheConf = "/etc/apache2/sites-enabled/app.conf";
 
-const config = JSON.parse(fs.readFileSync(path.join(secretsDir, "config", "config.json"), "utf8"));
+const config = JSON.parse(fs.readFileSync(path.join(configDir, "config.json"), "utf8"));
 const domainKey = path.join(letsencryptDir, "domain.key");
 const domainCsr = path.join(letsencryptDir, "domain.csr");
 
