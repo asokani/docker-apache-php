@@ -10,6 +10,9 @@ RUN a2enmod ssl
 RUN a2enmod rewrite
 RUN a2enmod headers
 
+# enable ssh for scp file access
+RUN rm -f /etc/service/sshd/down
+
 # apache2
 RUN sed -i 's/APACHE_RUN_USER=www-data/APACHE_RUN_USER=www-user/g' /etc/apache2/envvars && \
     sed -i 's/APACHE_RUN_GROUP=www-data/APACHE_RUN_GROUP=www-user/g' /etc/apache2/envvars

@@ -3,6 +3,7 @@
 const path = require("path");
 const fs = require("fs");
 const childProcess = require("child_process");
+const apacheCreate = require("./apache-conf-create");
  
 const letsencryptDir = "/etc/secrets/letsencrypt";
 const configDir = "/etc/secrets/_config/apache-php";
@@ -25,7 +26,7 @@ const domainsFile = path.join(letsencryptDir, "domains.json");
 
 if (!fs.existsSync(domainsFile) || domainsString !== fs.readFileSync(domainsFile, "utf8")) {
     // domain have changed -> generate csr
-    const flattenedDomains = []
+    let flattenedDomains = []
     for (let i = 0; i < config.domains.length; i++) {
         flattenedDomains = flattenedDomains.concat(config.domains[i]);
     }
@@ -39,7 +40,7 @@ if (!fs.existsSync(domainsFile) || domainsString !== fs.readFileSync(domainsFile
 }
 
 if (!fs.existsSync(apacheConf)) {
-    const conf = apacheCreate.create(config.domains)
+    const conf = apacheCreate(config.domains)
 
     fs.writeFileSync(apacheConf, conf, "utf8");
 }
