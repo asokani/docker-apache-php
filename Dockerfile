@@ -27,6 +27,7 @@ RUN sed -i -e 's/upload_max_filesize\s\+=\s\+2M/upload_max_filesize = 50M/' /etc
 
 # initializer
 ADD apache-php.js /etc/my_init.d/10-apache-php.js
+ADD apache-conf-create.js /etc/my_init.d/apache-conf-create.js
 
 RUN rm /etc/apache2/sites-available/*
 RUN rm /etc/apache2/sites-enabled/*
