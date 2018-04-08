@@ -13,6 +13,7 @@ const apacheConf = "/etc/apache2/sites-enabled/app.conf";
 const config = JSON.parse(fs.readFileSync(path.join(configDir, "config.json"), "utf8"));
 const domainKey = path.join(letsencryptDir, "domain.key");
 const domainCsr = path.join(letsencryptDir, "domain.csr");
+const domainCrt = path.join(letsencryptDir, "signed.crt");
 
 
 childProcess.execSync(`
@@ -35,6 +36,11 @@ if (!fs.existsSync(domainsFile) || domainsString !== fs.readFileSync(domainsFile
         `-config <(cat /etc/ssl/openssl.cnf ` +
         `<(printf "[SAN]\nsubjectAltName=${flattenedDomains.map(value=>'DNS:' + value).join(",")}")) > ${domainCsr}'`
     , {stdio:[0, 1, 2]});
+    childProcess.execSync(`
+        openssl x509 -req -days 365 -in ${domainCsr} -signkey ${domainKey} -out ${domainCrt}
+        chown acme ${domainCrt}
+        chmod 400 ${domainCrt}
+    `, {stdio:[0, 1, 2]});
 
     fs.writeFileSync(domainsFile, domainsString, "utf8");
 }
